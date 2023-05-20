@@ -13,6 +13,7 @@ namespace SubFolderFileRenamer
 {
     public partial class Form1 : Form
     {
+        static int totalFiles = 0;
         public Form1()
         {
             InitializeComponent();
@@ -21,11 +22,11 @@ namespace SubFolderFileRenamer
         private void b_Start_Click(object sender, EventArgs e)
         {
             RenameFolder(tb_Path.Text, tb_OldString.Text, tb_NewString.Text);
-
+            MessageBox.Show("Done-TotalFiles:" + totalFiles);
         }
         static void RenameFolder(string folderName, string oldName, string newName)
         {
-            var totalFiles = Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).Length;
+            totalFiles = Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).Length;
             var currentFile = 0;
             DirectoryInfo dirInfo = new DirectoryInfo(folderName);
 
@@ -51,7 +52,6 @@ namespace SubFolderFileRenamer
                 }
                 currentFile++;
             }
-            MessageBox.Show("Done-" + currentFile);
         }
 
     }
