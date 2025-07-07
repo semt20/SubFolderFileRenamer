@@ -26,33 +26,37 @@ namespace SubFolderFileRenamer
         }
         static void RenameFolder(string folderName, string oldName, string newName)
         {
-            totalFiles = Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).Length;
-            var currentFile = 0;
             DirectoryInfo dirInfo = new DirectoryInfo(folderName);
 
-            // Rename subfolders
+            // Önce ALT klasörlerde işlem yap (yoksa üst klasörü değiştirince alt klasörü bulamazsın)
             foreach (var subDir in dirInfo.GetDirectories())
             {
+                RenameFolder(subDir.FullName, oldName, newName);
+
                 if (subDir.Name.Contains(oldName))
                 {
                     string newSubDirName = Path.Combine(subDir.Parent.FullName, subDir.Name.Replace(oldName, newName));
-                    subDir.MoveTo(newSubDirName);
+                    if (!Directory.Exists(newSubDirName))
+                    {
+                        subDir.MoveTo(newSubDirName);
+                    }
                 }
-                RenameFolder(subDir.FullName, oldName, newName);
-                currentFile++;
             }
 
-            // Rename files
+            // Dosyaları yeniden adlandır
             foreach (var file in dirInfo.GetFiles())
             {
                 if (file.Name.Contains(oldName))
                 {
                     string newFileName = Path.Combine(file.Directory.FullName, file.Name.Replace(oldName, newName));
-                    file.MoveTo(newFileName);
+                    if (!File.Exists(newFileName))
+                    {
+                        file.MoveTo(newFileName);
+                    }
                 }
-                currentFile++;
             }
         }
+
 
     }
 }
